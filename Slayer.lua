@@ -1,7 +1,10 @@
 -- ============================================================================
--- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT REFACTORED (V3.2)
--- 🚀 Optimizado por Gemini Modo Experto | Base de Paolo
+-- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT REFACTORED (V3.3)
+-- 🚀 Ultra Optimizado | Corrección de Persistencia y Pérdida de Memoria
 -- ============================================================================
+
+-- 💾 CONFIGURACIÓN DE PROYECTO 
+local PROJECT_NAME = "Universal" 
 
 -- 🔒 Envoltura de seguridad para servicios (Bypass Anti-Cheat)
 local function getService(serviceName)
@@ -69,9 +72,9 @@ local Themes = {
 local CurrentTheme = Themes["Void Premium"]
 
 -- ============================================================================
--- 💾 ALMACENAMIENTO DE PARÁMETROS LOCALES
+-- 💾 ALMACENAMIENTO DE PARÁMETROS OPTIMIZADO
 -- ============================================================================
-local CONFIG_FILE = "KillerHub_Universal_Config.json"
+local CONFIG_FILE = "KillerHub_" .. PROJECT_NAME .. "_Config.json"
 local DefaultConfig = {
     Volume = 50, ToggleKey = "RightControl", SelectedTheme = "Void Premium",
     GuiWidth = 50, GuiHeight = 50, UiOpacity = 100, ToggleBtnSize = 46
@@ -147,14 +150,14 @@ local Topbar = create("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 
 create("UICorner", {CornerRadius = UDim.new(0, 10)}, Topbar)
 local TopbarPatch = create("Frame", {Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 1, -10), BackgroundColor3 = CurrentTheme.BG_MAIN, BorderSizePixel = 0}, Topbar)
 
-local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | Master Expert v3.2 🩸", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
+local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | By Paolo", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
 local DecorLine = create("Frame", {Size = UDim2.new(0, 50, 0, 2), Position = UDim2.new(0, 18, 1, -2), BackgroundColor3 = CurrentTheme.ACCENT, BorderSizePixel = 0}, Topbar)
 local PerformanceLabel = create("TextLabel", {Size = UDim2.new(0, 160, 1, 0), Position = UDim2.new(1, -15, 0, 0), AnchorPoint = Vector2.new(1, 0), BackgroundTransparency = 1, Text = "FPS: -- | PING: --", TextColor3 = CurrentTheme.TEXT_MUTED, TextXAlignment = Enum.TextXAlignment.Right, Font = Enum.Font.GothamMedium, TextSize = 11}, Topbar)
 
 local loopActive = true
 task.spawn(function()
     while loopActive do
-        task.wait(1)
+        task.wait(2) 
         if ScreenGui and ScreenGui.Parent then
             local fps = math.floor(Workspace:GetRealPhysicsFPS())
             local ping = 0
@@ -165,47 +168,44 @@ task.spawn(function()
 end)
 
 -- ============================================================================
--- 🕹️ MOTOR DE ARRASTRE OPTIMIZADO (0% CPU en Reposo)
+-- 🕹️ MOTOR DE ARRASTRE ULTRA OPTIMIZADO (0% Fuga de Memoria)
 -- ============================================================================
 local function makeDraggable(clickObject, dragObject)
-    local dragging, dragStart, startPos
-    local moveConn, endConn
+    local dragging = false
+    local dragStart, startPos
 
     connect(clickObject.InputBegan, function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
             startPos = dragObject.Position
+        end
+    end)
 
-            -- Conectamos eventos dinámicamente SOLO al arrastrar
-            moveConn = UserInputService.InputChanged:Connect(function(moveInput)
-                if dragging and (moveInput.UserInputType == Enum.UserInputType.MouseMovement or moveInput.UserInputType == Enum.UserInputType.Touch) then
-                    local delta = moveInput.Position - dragStart
-                    local screenSize = ScreenGui.AbsoluteSize
-                    
-                    if dragObject == MainFrame then
-                        local frameSize = MainFrame.AbsoluteSize
-                        local absoluteX = (screenSize.X * 0.5) + (startPos.X.Offset + delta.X)
-                        local absoluteY = (screenSize.Y * 0.5) + (startPos.Y.Offset + delta.Y)
-                        local clampedX = math.clamp(absoluteX, frameSize.X / 2, screenSize.X - (frameSize.X / 2))
-                        local clampedY = math.clamp(absoluteY, frameSize.Y / 2, screenSize.Y - (frameSize.Y / 2))
-                        dragObject.Position = UDim2.new(0.5, clampedX - (screenSize.X * 0.5), 0.5, clampedY - (screenSize.Y * 0.5))
-                    else
-                        local btnSize = dragObject.AbsoluteSize
-                        local newX = math.clamp(startPos.X.Offset + delta.X, 0, screenSize.X - btnSize.X)
-                        local newY = math.clamp(startPos.Y.Offset + delta.Y, 0, screenSize.Y - btnSize.Y)
-                        dragObject.Position = UDim2.new(0, newX, 0, newY)
-                    end
-                end
-            end)
+    connect(UserInputService.InputChanged, function(moveInput)
+        if dragging and (moveInput.UserInputType == Enum.UserInputType.MouseMovement or moveInput.UserInputType == Enum.UserInputType.Touch) then
+            local delta = moveInput.Position - dragStart
+            local screenSize = ScreenGui.AbsoluteSize
+            
+            if dragObject == MainFrame then
+                local frameSize = MainFrame.AbsoluteSize
+                local absoluteX = (screenSize.X * 0.5) + (startPos.X.Offset + delta.X)
+                local absoluteY = (screenSize.Y * 0.5) + (startPos.Y.Offset + delta.Y)
+                local clampedX = math.clamp(absoluteX, frameSize.X / 2, screenSize.X - (frameSize.X / 2))
+                local clampedY = math.clamp(absoluteY, frameSize.Y / 2, screenSize.Y - (frameSize.Y / 2))
+                dragObject.Position = UDim2.new(0.5, clampedX - (screenSize.X * 0.5), 0.5, clampedY - (screenSize.Y * 0.5))
+            else
+                local btnSize = dragObject.AbsoluteSize
+                local newX = math.clamp(startPos.X.Offset + delta.X, 0, screenSize.X - btnSize.X)
+                local newY = math.clamp(startPos.Y.Offset + delta.Y, 0, screenSize.Y - btnSize.Y)
+                dragObject.Position = UDim2.new(0, newX, 0, newY)
+            end
+        end
+    end)
 
-            endConn = UserInputService.InputEnded:Connect(function(endInput)
-                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
-                    dragging = false
-                    if moveConn then moveConn:Disconnect() moveConn = nil end
-                    if endConn then endConn:Disconnect() endConn = nil end
-                end
-            end)
+    connect(UserInputService.InputEnded, function(endInput)
+        if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
         end
     end)
 end
@@ -263,7 +263,7 @@ connect(UserInputService.InputBegan, function(input, gp)
 end)
 
 -- ============================================================================
--- 📦 API CORE INTEGRADA (REDISEÑADA)
+-- 📦 API CORE INTEGRADA
 -- ============================================================================
 local Killer = {
     Tabs = {}, Frames = {}, Buttons = {}, Config = Config, Flags = Flags,
@@ -300,7 +300,6 @@ function Killer:Unload()
     end
     if ScreenGui then ScreenGui:Destroy() end
     
-    -- Garbage Collector: Liberación forzada de memoria RAM Lua
     table.clear(Connections)
     table.clear(Killer.AllElements)
     table.clear(Killer.TargetThemeElements)
@@ -348,6 +347,60 @@ function TabMethods:CreateSection(text)
     return Container
 end
 
+-- ============================================================================
+-- 🛠️ MOTOR SLIDER INTERNO SEGURO 
+-- ============================================================================
+local function createInternalSlider(parentFrame, min, max, default, callback, onReleaseCallback)
+    local Track = create("Frame", {Size = UDim2.new(1, 0, 0, 6), BackgroundColor3 = Color3.fromRGB(36, 36, 42)}, parentFrame)
+    create("UICorner", {CornerRadius = UDim.new(0, 3)}, Track)
+    local Fill = create("Frame", {Name = "SliderFill", BackgroundColor3 = CurrentTheme.ACCENT, Size = UDim2.new(0, 0, 1, 0)}, Track)
+    create("UICorner", {CornerRadius = UDim.new(0, 3)}, Fill)
+    local Knob = create("TextButton", {Size = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(245,245,245), Text = "", AutoButtonColor = false}, Track)
+    create("UICorner", {CornerRadius = UDim.new(1, 0)}, Knob)
+
+    local currentValue = default
+
+    local function updateSlider(v)
+        currentValue = math.clamp(v, min, max)
+        local pct = (currentValue - min) / (max - min)
+        Fill.Size = UDim2.new(pct, 0, 1, 0)
+        Knob.Position = UDim2.new(pct, -6, 0.5, -6)
+        pcall(callback, currentValue)
+    end
+
+    local sliding = false
+    
+    connect(Knob.InputBegan, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            sliding = true
+        end
+    end)
+    
+    connect(UserInputService.InputChanged, function(mInput)
+        if sliding and (mInput.UserInputType == Enum.UserInputType.MouseMovement or mInput.UserInputType == Enum.UserInputType.Touch) then
+            local pct = math.clamp((mInput.Position.X - Track.AbsolutePosition.X) / Track.AbsoluteSize.X, 0, 1)
+            updateSlider(min + (pct * (max - min)))
+        end
+    end)
+    
+    connect(UserInputService.InputEnded, function(eInput)
+        if eInput.UserInputType == Enum.UserInputType.MouseButton1 or eInput.UserInputType == Enum.UserInputType.Touch then
+            if sliding then
+                sliding = false
+                if onReleaseCallback then pcall(onReleaseCallback, currentValue) end
+            end
+        end
+    end)
+
+    updateSlider(currentValue)
+    return {
+        Update = updateSlider,
+        SetColor = function(color) Fill.BackgroundColor3 = color end,
+        Track = Track,
+        Fill = Fill
+    }
+end
+
 function TabMethods:CreateToggle(flagName, text, callback)
     if Config[flagName] == nil then Config[flagName] = false end Flags[flagName] = { CurrentValue = Config[flagName] }
     
@@ -378,60 +431,12 @@ function TabMethods:CreateToggle(flagName, text, callback)
     end)
 
     Killer:ApplyHover(ToggleButton, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
-    stateUpdate() task.spawn(callback, Flags[flagName].CurrentValue)
+    stateUpdate() 
+    
+    task.defer(pcall, callback, Flags[flagName].CurrentValue)
+    
     self:RegisterElement(ToggleButton, ToggleLabel, self.Frame.Name)
     return {Set = function(_, bool) Flags[flagName].CurrentValue = bool Config[flagName] = bool saveConfig() stateUpdate() pcall(callback, bool) end}
-end
-
--- ============================================================================
--- 🛠️ MOTOR SLIDER INTERNO (REUTILIZABLE)
--- ============================================================================
-local function createInternalSlider(parentFrame, min, max, default, callback)
-    local Track = create("Frame", {Size = UDim2.new(1, 0, 0, 6), BackgroundColor3 = Color3.fromRGB(36, 36, 42)}, parentFrame)
-    create("UICorner", {CornerRadius = UDim.new(0, 3)}, Track)
-    local Fill = create("Frame", {BackgroundColor3 = CurrentTheme.ACCENT, Size = UDim2.new(0, 0, 1, 0)}, Track)
-    create("UICorner", {CornerRadius = UDim.new(0, 3)}, Fill)
-    local Knob = create("TextButton", {Size = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(245,245,245), Text = "", AutoButtonColor = false}, Track)
-    create("UICorner", {CornerRadius = UDim.new(1, 0)}, Knob)
-
-    local currentValue = default
-
-    local function updateSlider(v)
-        currentValue = math.clamp(v, min, max)
-        local pct = (currentValue - min) / (max - min)
-        Fill.Size = UDim2.new(pct, 0, 1, 0)
-        Knob.Position = UDim2.new(pct, -6, 0.5, -6)
-        pcall(callback, currentValue)
-    end
-
-    local sliding = false
-    connect(Knob.InputBegan, function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            sliding = true
-            local moveC, endC
-            
-            moveC = UserInputService.InputChanged:Connect(function(mInput)
-                if sliding and (mInput.UserInputType == Enum.UserInputType.MouseMovement or mInput.UserInputType == Enum.UserInputType.Touch) then
-                    local pct = math.clamp((mInput.Position.X - Track.AbsolutePosition.X) / Track.AbsoluteSize.X, 0, 1)
-                    updateSlider(min + (pct * (max - min)))
-                end
-            end)
-            
-            endC = UserInputService.InputEnded:Connect(function(eInput)
-                if eInput.UserInputType == Enum.UserInputType.MouseButton1 or eInput.UserInputType == Enum.UserInputType.Touch then
-                    sliding = false
-                    if moveC then moveC:Disconnect() end
-                    if endC then endC:Disconnect() end
-                end
-            end)
-        end
-    end)
-
-    updateSlider(currentValue)
-    return {
-        Update = updateSlider,
-        SetColor = function(color) Fill.BackgroundColor3 = color end
-    }
 end
 
 function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
@@ -445,7 +450,7 @@ function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
     local sliderController = createInternalSlider(SliderFrame, min, max, Flags[flagName].CurrentValue, function(v)
         if step and step > 0 then v = math.round(v / step) * step end
         v = math.clamp(v, min, max)
-        Flags[flagName].CurrentValue = v Config[flagName] = v saveConfig()
+        Flags[flagName].CurrentValue = v
         
         if step and step < 1 then
             local decimals = tostring(step):match("%.(%d+)")
@@ -454,15 +459,24 @@ function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
             ValueBox.Text = tostring(math.round(v))
         end
         pcall(callback, v)
+    end, function(finalVal)
+        Config[flagName] = finalVal
+        saveConfig() 
     end)
     
-    -- Posicionar el slider interno correctamente en este contenedor
-    SliderFrame:GetChildren()[3].Position = UDim2.new(0, 2, 0, 26)
-    SliderFrame:GetChildren()[3].Size = UDim2.new(1, -4, 0, 6)
+    sliderController.Track.Position = UDim2.new(0, 2, 0, 26)
+    sliderController.Track.Size = UDim2.new(1, -4, 0, 6)
 
     connect(ValueBox.FocusLost, function()
         local inputNum = tonumber(ValueBox.Text)
-        sliderController.Update(inputNum or Flags[flagName].CurrentValue)
+        if inputNum then
+            local cleanVal = math.clamp(inputNum, min, max)
+            Config[flagName] = cleanVal
+            saveConfig()
+            sliderController.Update(cleanVal)
+        else
+            sliderController.Update(Flags[flagName].CurrentValue) 
+        end
     end)
     
     table.insert(Killer.TargetThemeElements, function()
@@ -470,8 +484,10 @@ function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
         sliderController.SetColor(CurrentTheme.ACCENT)
     end)
 
+    task.defer(pcall, callback, Flags[flagName].CurrentValue)
+
     self:RegisterElement(SliderFrame, Label, self.Frame.Name)
-    return {Set = function(_, value) sliderController.Update(value) end}
+    return {Set = function(_, value) sliderController.Update(value) Config[flagName] = value saveConfig() end}
 end
 
 function TabMethods:CreateDropdown(flagName, text, options, callback)
@@ -521,7 +537,10 @@ function TabMethods:CreateDropdown(flagName, text, options, callback)
     end)
 
     Killer:ApplyHover(DDFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
-    makeOptions() task.spawn(callback, Flags[flagName].CurrentValue)
+    makeOptions() 
+    
+    task.defer(pcall, callback, Flags[flagName].CurrentValue)
+    
     self:RegisterElement(DDFrame, Label, self.Frame.Name)
     return {Refresh = function(_, newOptions) options = newOptions makeOptions() end}
 end
@@ -588,13 +607,16 @@ function TabMethods:CreateMultiDropdown(flagName, text, options, callback)
     end)
 
     Killer:ApplyHover(DDFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
-    makeOptions() task.spawn(callback, Flags[flagName].CurrentValue)
+    makeOptions() 
+    
+    task.defer(pcall, callback, Flags[flagName].CurrentValue)
+    
     self:RegisterElement(DDFrame, Label, self.Frame.Name)
     return {Refresh = function(_, newOptions) options = newOptions makeOptions() end}
 end
 
 -- ============================================================================
--- 🎨 NOVEDAD: COMPONENTE COLOR PICKER REAL (RGB SLIDERS INTERNOS EXPANDIBLES)
+-- 🎨 COLOR PICKER REAL COMPLETO 
 -- ============================================================================
 function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
     if Config[flagName] == nil or type(Config[flagName]) ~= "table" then 
@@ -616,42 +638,38 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
     create("UICorner", {CornerRadius = UDim.new(0, 4)}, ColorPreview)
     create("UIStroke", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.7}, ColorPreview)
 
-    -- Panel Expandible de Canales RGB
     local SliderContainer = create("Frame", {Size = UDim2.new(1, -24, 0, 65), Position = UDim2.new(0, 12, 0, 38), BackgroundTransparency = 1}, CPFrame)
-    
     local open = false
 
     local function updateColor()
         Flags[flagName].CurrentValue = currentRGB
-        Config[flagName] = {currentRGB.R, currentRGB.G, currentRGB.B}
-        saveConfig()
         ColorPreview.BackgroundColor3 = currentRGB
         pcall(callback, currentRGB)
     end
 
-    -- Sliders de Canales Individuales
     local rSlider = createInternalSlider(SliderContainer, 0, 255, currentRGB.R * 255, function(v)
         currentRGB = Color3.new(v/255, currentRGB.G, currentRGB.B) updateColor()
-    end)
+    end, function() Config[flagName] = {currentRGB.R, currentRGB.G, currentRGB.B} saveConfig() end)
+    
     local gSlider = createInternalSlider(SliderContainer, 0, 255, currentRGB.G * 255, function(v)
         currentRGB = Color3.new(currentRGB.R, v/255, currentRGB.B) updateColor()
-    end)
+    end, function() Config[flagName] = {currentRGB.R, currentRGB.G, currentRGB.B} saveConfig() end)
+    
     local bSlider = createInternalSlider(SliderContainer, 0, 255, currentRGB.B * 255, function(v)
         currentRGB = Color3.new(currentRGB.R, currentRGB.G, v/255) updateColor()
-    end)
+    end, function() Config[flagName] = {currentRGB.R, currentRGB.G, currentRGB.B} saveConfig() end)
 
-    -- Acomodar canales visualmente
-    SliderContainer:GetChildren()[1].Position = UDim2.new(0, 0, 0, 10)  -- R
-    SliderContainer:GetChildren()[1].Size = UDim2.new(1, 0, 0, 6)
-    SliderContainer:GetChildren()[1].Frame.BackgroundColor3 = Color3.fromRGB(235, 35, 35)
+    rSlider.Track.Position = UDim2.new(0, 0, 0, 10)
+    rSlider.Track.Size = UDim2.new(1, 0, 0, 6)
+    rSlider.Fill.BackgroundColor3 = Color3.fromRGB(235, 35, 35)
     
-    SliderContainer:GetChildren()[2].Position = UDim2.new(0, 0, 0, 30)  -- G
-    SliderContainer:GetChildren()[2].Size = UDim2.new(1, 0, 0, 6)
-    SliderContainer:GetChildren()[2].Frame.BackgroundColor3 = Color3.fromRGB(35, 235, 35)
+    gSlider.Track.Position = UDim2.new(0, 0, 0, 30)
+    gSlider.Track.Size = UDim2.new(1, 0, 0, 6)
+    gSlider.Fill.BackgroundColor3 = Color3.fromRGB(35, 235, 35)
 
-    SliderContainer:GetChildren()[3].Position = UDim2.new(0, 0, 0, 50)  -- B
-    SliderContainer:GetChildren()[3].Size = UDim2.new(1, 0, 0, 6)
-    SliderContainer:GetChildren()[3].Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 235)
+    bSlider.Track.Position = UDim2.new(0, 0, 0, 50)
+    bSlider.Track.Size = UDim2.new(1, 0, 0, 6)
+    bSlider.Fill.BackgroundColor3 = Color3.fromRGB(35, 35, 235)
 
     connect(Trigger.MouseButton1Click, function()
         open = not open playUISound()
@@ -663,6 +681,9 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
     end)
 
     Killer:ApplyHover(CPFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    
+    task.defer(pcall, callback, currentRGB)
+
     self:RegisterElement(CPFrame, Label, self.Frame.Name)
     
     return {
@@ -671,12 +692,13 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
             rSlider.Update(newColor.R * 255)
             gSlider.Update(newColor.G * 255)
             bSlider.Update(newColor.B * 255)
+            Config[flagName] = {newColor.R, newColor.G, newColor.B} saveConfig()
         end
     }
 end
 
 -- ============================================================================
--- 📝 COMPONENTE INPUT
+-- 🔓 COMPONENTE INPUT 
 -- ============================================================================
 function TabMethods:CreateInput(flagName, text, placeholder, callback)
     if Config[flagName] == nil then Config[flagName] = "" end 
@@ -710,7 +732,10 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
         InpFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY Stroke.Color = CurrentTheme.BORDER Label.TextColor3 = CurrentTheme.TEXT_WHITE Box.BackgroundColor3 = CurrentTheme.BG_MAIN Box.TextColor3 = CurrentTheme.TEXT_WHITE
     end)
     
-    private:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    Killer:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    
+    task.defer(pcall, callback, Config[flagName])
+
     self:RegisterElement(InpFrame, Label, self.Frame.Name)
 end
 
@@ -738,6 +763,10 @@ function TabMethods:CreateKeybind(flagName, text, defaultKey, callback)
     end)
     
     Killer:ApplyHover(KFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    
+    local success, keyEnum = pcall(function() return Enum.KeyCode[Config[flagName]] end)
+    if success then task.defer(pcall, callback, keyEnum) end
+
     self:RegisterElement(KFrame, Lbl, self.Frame.Name)
 end
 
@@ -874,6 +903,9 @@ SettingsTab:CreateSlider("GuiHeight", "Ajustar Alto Ventana", 0, 100, 1, functio
 SettingsTab:CreateSection("Seguridad y Limpieza")
 SettingsTab:CreateButton("Apagar Script por Completo (Unload)", function() Killer:Unload() end)
 
+-- ============================================================================
+-- 🚀 INICIALIZACIÓN DE PESTAÑA PREDETERMINADA Y RETORNO
+-- ============================================================================
 task.defer(function()
     if Killer.Buttons["Home"] then 
         for tName, tFrame in pairs(Killer.Frames) do
@@ -881,14 +913,12 @@ task.defer(function()
             local tBtn = Killer.Buttons[tName]
             if tBtn then
                 local lbl = tBtn:FindFirstChildWhichIsA("TextLabel")
-                if lbl then lbl.TextColor3 = (tName == "Home") and CurrentTheme.TEXT_WHITE or CurrentTheme.TEXT_MUTED end
-                local ind = tBtn:FindFirstChild("IndicatorLine")
-                if ind then ind.BackgroundTransparency = (tName == "Home") and 0 or 1 end
+                if lbl then 
+                    lbl.TextColor3 = (tName == "Home") and CurrentTheme.TEXT_WHITE or CurrentTheme.TEXT_MUTED
+                end
             end
         end
-        Killer.CurrentTab = "Home"
     end
 end)
 
-getgenv().Killer = Killer
 return Killer
