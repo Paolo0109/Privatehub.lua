@@ -579,6 +579,73 @@ function TabMethods:CreateMultiDropdown(flagName, text, options, callback)
 end
 
 -- ============================================================================
+-- 🎨 NOVEDAD: COMPONENTE COLOR PICKER (MASTER EXPERT FIX)
+-- ============================================================================
+function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
+    if Config[flagName] == nil or type(Config[flagName]) == "table" then 
+        Config[flagName] = {defaultColor.R, defaultColor.G, defaultColor.B}
+    end
+    
+    local savedTable = Config[flagName]
+    local initialColor = Color3.new(savedTable[1], savedTable[2], savedTable[3])
+    Flags[flagName] = { CurrentValue = initialColor }
+
+    local CPFrame = create("Frame", {Name = flagName, Size = UDim2.new(1, 0, 0, 38), BackgroundColor3 = CurrentTheme.BG_SECONDARY}, self.Frame)
+    create("UICorner", {CornerRadius = UDim.new(0, 6)}, CPFrame)
+    local Stroke = create("UIStroke", {Thickness = 1, Color = CurrentTheme.BORDER}, CPFrame)
+
+    local Label = create("TextLabel", {Size = UDim2.new(1, -70, 1, 0), Position = UDim2.new(0, 12, 0, 0), BackgroundTransparency = 1, Text = text, TextColor3 = CurrentTheme.TEXT_WHITE, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, CPFrame)
+    
+    -- Botón de despliegue/Muestra de color perimetral
+    local ColorPreview = create("TextButton", {
+        Size = UDim2.new(0, 34, 0, 18), 
+        Position = UDim2.new(1, -46, 0.5, -9), 
+        BackgroundColor3 = Flags[flagName].CurrentValue, 
+        Text = ""
+    }, CPFrame)
+    create("UICorner", {CornerRadius = UDim.new(0, 4)}, ColorPreview)
+    local PreviewStroke = create("UIStroke", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.8}, ColorPreview)
+
+    -- Lógica de selección cíclica de paletas predefinidas como solución limpia y estable
+    local ColorPresets = {
+        Color3.fromRGB(235, 35, 35),   -- Rojo Carmesí
+        Color3.fromRGB(138, 43, 226),  -- Violeta Void
+        Color3.fromRGB(0, 230, 115),   -- Verde Neón
+        Color3.fromRGB(0, 160, 255),   -- Azul Eléctrico
+        Color3.fromRGB(255, 200, 0),    -- Dorado Premium
+        Color3.fromRGB(255, 255, 255)  -- Blanco Puro
+    }
+
+    local function updateColor(newColor)
+        Flags[flagName].CurrentValue = newColor
+        Config[flagName] = {newColor.R, newColor.G, newColor.B}
+        saveConfig()
+        ColorPreview.BackgroundColor3 = newColor
+        pcall(callback, newColor)
+    end
+
+    local currentIndex = 1
+    connect(ColorPreview.MouseButton1Click, function()
+        playUISound()
+        currentIndex = currentIndex + 1
+        if currentIndex > #ColorPresets then currentIndex = 1 end
+        updateColor(ColorPresets[currentIndex])
+    end)
+
+    table.insert(Killer.TargetThemeElements, function()
+        CPFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY Stroke.Color = CurrentTheme.BORDER Label.TextColor3 = CurrentTheme.TEXT_WHITE
+    end)
+
+    Killer:ApplyHover(CPFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    task.spawn(callback, Flags[flagName].CurrentValue)
+    self:RegisterElement(CPFrame, Label, self.Frame.Name)
+    
+    return {
+        Set = function(_, newColor) updateColor(newColor) end
+    }
+end
+
+-- ============================================================================
 -- 📝 COMPONENTE INPUT PARCHADO (CON ANCHORPOINT ABSOLUTO Y RELLENO INTERNO)
 -- ============================================================================
 function TabMethods:CreateInput(flagName, text, placeholder, callback)
@@ -593,7 +660,7 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
     local Box = create("TextBox", {
         Size = UDim2.new(0, 140, 0, 26), 
         Position = UDim2.new(1, -12, 0.5, 0), 
-        AnchorPoint = Vector2.new(1, 0.5), -- FIX: Centrado perimetral exacto dentro de la UI
+        AnchorPoint = Vector2.new(1, 0.5), 
         BackgroundColor3 = CurrentTheme.BG_MAIN, 
         Text = Config[flagName], 
         PlaceholderText = placeholder, 
@@ -605,7 +672,7 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
         TextXAlignment = Enum.TextXAlignment.Left
     }, InpFrame)
     create("UICorner", {CornerRadius = UDim.new(0, 4)}, Box)
-    create("UIPadding", {PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)}, Box) -- Margen interno elegante
+    create("UIPadding", {PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)}, Box) 
     
     connect(Box.FocusLost, function() Config[flagName] = Box.Text saveConfig() pcall(callback, Box.Text) end)
     
@@ -613,7 +680,7 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
         InpFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY Stroke.Color = CurrentTheme.BORDER Label.TextColor3 = CurrentTheme.TEXT_WHITE Box.BackgroundColor3 = CurrentTheme.BG_MAIN Box.TextColor3 = CurrentTheme.TEXT_WHITE
     end)
     
-    CleanHover = Killer:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    Killer:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
     self:RegisterElement(InpFrame, Label, self.Frame.Name)
 end
 
