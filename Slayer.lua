@@ -1,7 +1,7 @@
 -- ============================================================================
--- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT EDITION (V2.9)
+-- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT EDITION (V3.0)
 -- 🧑‍💻 Desarrollado por: Paolo
--- 🚀 Ajustes: Arrastre de Bordes Absolutos, Sliders con Filtro de Entrada Estricto, Buscador Reactivo
+-- 🚀 Parches: Fix de Desborde en Inputs (AnchorPoint), Sliders de Configuración 1 en 1
 -- ============================================================================
 
 local Players = game:GetService("Players")
@@ -66,12 +66,12 @@ local Themes = {
 local CurrentTheme = Themes["Void Premium"]
 
 -- ============================================================================
--- 💾 ALMACENAMIENTO DE PARÁMETROS LOCALES
+-- 💾 ALMACENAMIENTO DE PARÁMETROS LOCALES (ESCALAS PRECISAS)
 -- ============================================================================
 local CONFIG_FILE = "KillerHub_Universal_Config.json"
 local DefaultConfig = {
-    Volume = 0.5, ToggleKey = "RightControl", SelectedTheme = "Void Premium",
-    GuiWidth = 0.466, GuiHeight = 0.4, UiOpacity = 1, ToggleBtnSize = 46
+    Volume = 50, ToggleKey = "RightControl", SelectedTheme = "Void Premium",
+    GuiWidth = 50, GuiHeight = 50, UiOpacity = 100, ToggleBtnSize = 46
 }
 local Config, Flags, Connections = {}, {}, {}
 
@@ -105,12 +105,12 @@ end
 
 local function playUISound()
     if not Config.Volume or Config.Volume <= 0 then return end
-    local sound = create("Sound", {SoundId = "rbxassetid://101735926591481", Volume = Config.Volume}, SoundService)
+    local sound = create("Sound", {SoundId = "rbxassetid://101735926591481", Volume = Config.Volume / 100}, SoundService)
     sound:Play() Debris:AddItem(sound, 1.5)
 end
 
 -- ============================================================================
--- 🖥️ ENTORNO GRÁFICO SEGURO (COBERTURA TOTAL DE PANTALLA DE BORDE A BORDE)
+-- 🖥️ ENTORNO GRÁFICO SEGURO
 -- ============================================================================
 local ScreenGui = create("ScreenGui", {
     Name = "KillerHub_Universal", 
@@ -134,7 +134,9 @@ local BordeGradient = create("UIGradient", {
 }, MainStroke)
 
 local function updateGuiSize()
-    MainFrame.Size = UDim2.new(0, math.floor(430 + ((Config.GuiWidth or 0.466) * 280)), 0, math.floor(280 + ((Config.GuiHeight or 0.4) * 230)))
+    local wOffset = ((Config.GuiWidth or 50) / 100) * 280
+    local hOffset = ((Config.GuiHeight or 50) / 100) * 230
+    MainFrame.Size = UDim2.new(0, math.floor(430 + wOffset), 0, math.floor(280 + hOffset))
 end
 updateGuiSize()
 
@@ -142,7 +144,7 @@ local Topbar = create("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 
 create("UICorner", {CornerRadius = UDim.new(0, 10)}, Topbar)
 local TopbarPatch = create("Frame", {Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 1, -10), BackgroundColor3 = CurrentTheme.BG_MAIN, BorderSizePixel = 0}, Topbar)
 
-local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | Premium v2.9 👻", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
+local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | Premium v3.0 👻", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
 local DecorLine = create("Frame", {Size = UDim2.new(0, 50, 0, 2), Position = UDim2.new(0, 18, 1, -2), BackgroundColor3 = CurrentTheme.ACCENT, BorderSizePixel = 0}, Topbar)
 local PerformanceLabel = create("TextLabel", {Size = UDim2.new(0, 160, 1, 0), Position = UDim2.new(1, -15, 0, 0), AnchorPoint = Vector2.new(1, 0), BackgroundTransparency = 1, Text = "FPS: -- | PING: --", TextColor3 = CurrentTheme.TEXT_MUTED, TextXAlignment = Enum.TextXAlignment.Right, Font = Enum.Font.GothamMedium, TextSize = 11}, Topbar)
 
@@ -158,7 +160,7 @@ task.spawn(function()
 end)
 
 -- ============================================================================
--- 🕹️ MOTOR DE ARRASTRE SIN DESFASES (SISTEMA INTEGRAL DE LÍMITES)
+-- 🕹️ MOTOR DE ARRASTRE SIN DESFASES
 -- ============================================================================
 local function makeDraggable(clickObject, dragObject)
     local dragging, dragStart, startPos
@@ -226,7 +228,7 @@ create("UICorner", {CornerRadius = UDim.new(0, 10)}, BtnIcon)
 makeDraggable(OpenCloseBtn, OpenCloseBtn)
 
 local function updateUiOpacity()
-    local trans = 1 - (Config.UiOpacity or 1)
+    local trans = 1 - ((Config.UiOpacity or 100) / 100)
     MainFrame.BackgroundTransparency = trans Topbar.BackgroundTransparency = trans Sidebar.BackgroundTransparency = trans
 end
 
@@ -250,7 +252,7 @@ connect(UserInputService.InputBegan, function(input, gp)
 end)
 
 -- ============================================================================
--- 📦 API CORE INTEGRADA (CON BUSCADOR DINÁMICO)
+-- 📦 API CORE INTEGRADA
 -- ============================================================================
 local Killer = {
     Tabs = {}, Frames = {}, Buttons = {}, Config = Config, Flags = Flags,
@@ -259,7 +261,6 @@ local Killer = {
 
 function Killer:AddTask(obj) table.insert(self._Trash, obj) return obj end
 
--- CONEXIÓN INTERNA DEL BUSCADOR MULTI-ELEMENTO EN TIEMPO REAL
 connect(SearchInput:GetPropertyChangedSignal("Text"), function()
     local query = SearchInput.Text:lower()
     for _, element in ipairs(Killer.AllElements) do
@@ -367,7 +368,7 @@ function TabMethods:CreateToggle(flagName, text, callback)
 end
 
 -- ============================================================================
--- 🛠️ MOTOR SLIDER PROFESIONAL CON FILTRO DE ESCALA E ENTRADA
+-- 🛠️ MOTOR SLIDER (PARCHE DE CONTROL DE PASOS DE 1 EN 1 ENTEROS COMPLETOS)
 -- ============================================================================
 function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
     if type(step) == "function" then
@@ -577,6 +578,9 @@ function TabMethods:CreateMultiDropdown(flagName, text, options, callback)
     return {Refresh = function(_, newOptions) options = newOptions makeOptions() end}
 end
 
+-- ============================================================================
+-- 📝 COMPONENTE INPUT PARCHADO (CON ANCHORPOINT ABSOLUTO Y RELLENO INTERNO)
+-- ============================================================================
 function TabMethods:CreateInput(flagName, text, placeholder, callback)
     if Config[flagName] == nil then Config[flagName] = "" end 
     
@@ -584,9 +588,24 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
     create("UICorner", {CornerRadius = UDim.new(0, 6)}, InpFrame) 
     local Stroke = create("UIStroke", {Thickness = 1, Color = CurrentTheme.BORDER}, InpFrame)
     
-    local Label = create("TextLabel", {Size = UDim2.new(1, -150, 1, 0), Position = UDim2.new(0, 12, 0, 0), BackgroundTransparency = 1, Text = text, TextColor3 = CurrentTheme.TEXT_WHITE, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, InpFrame)
-    local Box = create("TextBox", {Size = UDim2.new(0, 120, 0, 26), Position = UDim2.new(1, -12, 0.5, -13), BackgroundColor3 = CurrentTheme.BG_MAIN, Text = Config[flagName], PlaceholderText = placeholder, PlaceholderColor3 = CurrentTheme.TEXT_MUTED, TextColor3 = CurrentTheme.TEXT_WHITE, Font = Enum.Font.GothamMedium, TextSize = 11, ClearTextOnFocus = false}, InpFrame)
+    local Label = create("TextLabel", {Size = UDim2.new(1, -170, 1, 0), Position = UDim2.new(0, 12, 0, 0), BackgroundTransparency = 1, Text = text, TextColor3 = CurrentTheme.TEXT_WHITE, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, InpFrame)
+    
+    local Box = create("TextBox", {
+        Size = UDim2.new(0, 140, 0, 26), 
+        Position = UDim2.new(1, -12, 0.5, 0), 
+        AnchorPoint = Vector2.new(1, 0.5), -- FIX: Centrado perimetral exacto dentro de la UI
+        BackgroundColor3 = CurrentTheme.BG_MAIN, 
+        Text = Config[flagName], 
+        PlaceholderText = placeholder, 
+        PlaceholderColor3 = CurrentTheme.TEXT_MUTED, 
+        TextColor3 = CurrentTheme.TEXT_WHITE, 
+        Font = Enum.Font.GothamMedium, 
+        TextSize = 11, 
+        ClearTextOnFocus = false,
+        TextXAlignment = Enum.TextXAlignment.Left
+    }, InpFrame)
     create("UICorner", {CornerRadius = UDim.new(0, 4)}, Box)
+    create("UIPadding", {PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)}, Box) -- Margen interno elegante
     
     connect(Box.FocusLost, function() Config[flagName] = Box.Text saveConfig() pcall(callback, Box.Text) end)
     
@@ -594,7 +613,7 @@ function TabMethods:CreateInput(flagName, text, placeholder, callback)
         InpFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY Stroke.Color = CurrentTheme.BORDER Label.TextColor3 = CurrentTheme.TEXT_WHITE Box.BackgroundColor3 = CurrentTheme.BG_MAIN Box.TextColor3 = CurrentTheme.TEXT_WHITE
     end)
     
-    Killer:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
+    CleanHover = Killer:ApplyHover(InpFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
     self:RegisterElement(InpFrame, Label, self.Frame.Name)
 end
 
@@ -740,19 +759,19 @@ table.insert(Killer.TargetThemeElements, function()
 end)
 
 -- ============================================================================
--- ⚙️ PESTAÑA DE AJUSTES GLOBALES (SETTINGS)
+-- ⚙️ PESTAÑA DE AJUSTES GLOBALES (ESCALAS ESTRICTAS DE 1 EN 1)
 -- ============================================================================
 local SettingsTab = Killer:CreateTab("Settings", "rbxassetid://10747372517")
 SettingsTab:CreateSection("Personalización")
 SettingsTab:CreateDropdown("SelectedTheme", "Tema Visual:", {"Void Premium", "Crimson Dark", "Blood", "Classic Dark"}, function(selected) Killer:SetTheme(selected) end)
-SettingsTab:CreateSlider("UiOpacity", "Opacidad de la Interfaz", 0.1, 1, 0.05, function(v) updateUiOpacity() end)
+SettingsTab:CreateSlider("UiOpacity", "Opacidad de la Interfaz (%)", 10, 100, 1, function(v) updateUiOpacity() end)
 
 SettingsTab:CreateSection("Controles del Menú")
 SettingsTab:CreateKeybind("ToggleKey", "Cerrar / Abrir Menu (PC)", Enum.KeyCode.RightControl)
-SettingsTab:CreateSlider("ToggleBtnSize", "Tamaño de Botón Flotante", 30, 80, 2, function(v) updateButtonSize() end)
-SettingsTab:CreateSlider("Volume", "Volumen Interfaz", 0, 1, 0.1, function(v) Config.Volume = v end)
-SettingsTab:CreateSlider("GuiWidth", "Ajustar Ancho Ventana", 0, 1, 0.05, function(v) updateGuiSize() end)
-SettingsTab:CreateSlider("GuiHeight", "Ajustar Alto Ventana", 0, 1, 0.05, function(v) updateGuiSize() end)
+SettingsTab:CreateSlider("ToggleBtnSize", "Tamaño de Botón Flotante", 30, 80, 1, function(v) updateButtonSize() end)
+SettingsTab:CreateSlider("Volume", "Volumen Interfaz (%)", 0, 100, 1, function(v) Config.Volume = v end)
+SettingsTab:CreateSlider("GuiWidth", "Ajustar Ancho Ventana", 0, 100, 1, function(v) updateGuiSize() end)
+SettingsTab:CreateSlider("GuiHeight", "Ajustar Alto Ventana", 0, 100, 1, function(v) updateGuiSize() end)
 
 SettingsTab:CreateSection("Seguridad y Limpieza")
 SettingsTab:CreateButton("Apagar Script por Completo (Unload)", function() Killer:Unload() end)
