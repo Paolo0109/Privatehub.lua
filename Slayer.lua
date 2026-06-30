@@ -1,7 +1,7 @@
 -- ============================================================================
--- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT EDITION (V3.0)
+-- 🩸 KILLER HUB UNIVERSAL FRAMEWORK | MASTER EXPERT EDITION (V3.1)
 -- 🧑‍💻 Desarrollado por: Paolo
--- 🚀 Parches: Fix de Desborde en Inputs (AnchorPoint), Sliders de Configuración 1 en 1
+-- 🚀 Parches: Fix Definitivo de Crash y UIStroke en Color Picker
 -- ============================================================================
 
 local Players = game:GetService("Players")
@@ -66,7 +66,7 @@ local Themes = {
 local CurrentTheme = Themes["Void Premium"]
 
 -- ============================================================================
--- 💾 ALMACENAMIENTO DE PARÁMETROS LOCALES (ESCALAS PRECISAS)
+-- 💾 ALMACENAMIENTO DE PARÁMETROS LOCALES
 -- ============================================================================
 local CONFIG_FILE = "KillerHub_Universal_Config.json"
 local DefaultConfig = {
@@ -144,7 +144,7 @@ local Topbar = create("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 
 create("UICorner", {CornerRadius = UDim.new(0, 10)}, Topbar)
 local TopbarPatch = create("Frame", {Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 1, -10), BackgroundColor3 = CurrentTheme.BG_MAIN, BorderSizePixel = 0}, Topbar)
 
-local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | Premium v3.0 👻", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
+local Title = create("TextLabel", {Size = UDim2.new(0, 250, 1, 0), Position = UDim2.new(0, 18, 0, 0), BackgroundTransparency = 1, Text = "Killer Hub | Premium v3.1 👻", TextColor3 = CurrentTheme.ACCENT, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 14}, Topbar)
 local DecorLine = create("Frame", {Size = UDim2.new(0, 50, 0, 2), Position = UDim2.new(0, 18, 1, -2), BackgroundColor3 = CurrentTheme.ACCENT, BorderSizePixel = 0}, Topbar)
 local PerformanceLabel = create("TextLabel", {Size = UDim2.new(0, 160, 1, 0), Position = UDim2.new(1, -15, 0, 0), AnchorPoint = Vector2.new(1, 0), BackgroundTransparency = 1, Text = "FPS: -- | PING: --", TextColor3 = CurrentTheme.TEXT_MUTED, TextXAlignment = Enum.TextXAlignment.Right, Font = Enum.Font.GothamMedium, TextSize = 11}, Topbar)
 
@@ -160,7 +160,7 @@ task.spawn(function()
 end)
 
 -- ============================================================================
--- 🕹️ MOTOR DE ARRASTRE SIN DESFASES
+-- 🕹️ MOTOR DE ARRASTRE
 -- ============================================================================
 local function makeDraggable(clickObject, dragObject)
     local dragging, dragStart, startPos
@@ -368,7 +368,7 @@ function TabMethods:CreateToggle(flagName, text, callback)
 end
 
 -- ============================================================================
--- 🛠️ MOTOR SLIDER (PARCHE DE CONTROL DE PASOS DE 1 EN 1 ENTEROS COMPLETOS)
+-- 🛠️ MOTOR SLIDER
 -- ============================================================================
 function TabMethods:CreateSlider(flagName, text, min, max, step, callback)
     if type(step) == "function" then
@@ -579,10 +579,10 @@ function TabMethods:CreateMultiDropdown(flagName, text, options, callback)
 end
 
 -- ============================================================================
--- 🎨 NOVEDAD: COMPONENTE COLOR PICKER (MASTER EXPERT FIX)
+-- 🎨 NOVEDAD: COMPONENTE COLOR PICKER (MASTER EXPERT FIX DEFINITIVO V3.1)
 -- ============================================================================
 function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
-    if Config[flagName] == nil or type(Config[flagName]) == "table" then 
+    if Config[flagName] == nil or type(Config[flagName]) ~= "table" then 
         Config[flagName] = {defaultColor.R, defaultColor.G, defaultColor.B}
     end
     
@@ -596,7 +596,6 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
 
     local Label = create("TextLabel", {Size = UDim2.new(1, -70, 1, 0), Position = UDim2.new(0, 12, 0, 0), BackgroundTransparency = 1, Text = text, TextColor3 = CurrentTheme.TEXT_WHITE, Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, CPFrame)
     
-    -- Botón de despliegue/Muestra de color perimetral
     local ColorPreview = create("TextButton", {
         Size = UDim2.new(0, 34, 0, 18), 
         Position = UDim2.new(1, -46, 0.5, -9), 
@@ -604,16 +603,15 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
         Text = ""
     }, CPFrame)
     create("UICorner", {CornerRadius = UDim.new(0, 4)}, ColorPreview)
-    local PreviewStroke = create("UIStroke", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.8}, ColorPreview)
+    create("UIStroke", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.8}, ColorPreview)
 
-    -- Lógica de selección cíclica de paletas predefinidas como solución limpia y estable
     local ColorPresets = {
-        Color3.fromRGB(235, 35, 35),   -- Rojo Carmesí
-        Color3.fromRGB(138, 43, 226),  -- Violeta Void
-        Color3.fromRGB(0, 230, 115),   -- Verde Neón
-        Color3.fromRGB(0, 160, 255),   -- Azul Eléctrico
-        Color3.fromRGB(255, 200, 0),    -- Dorado Premium
-        Color3.fromRGB(255, 255, 255)  -- Blanco Puro
+        Color3.fromRGB(235, 35, 35),   
+        Color3.fromRGB(138, 43, 226),  
+        Color3.fromRGB(0, 230, 115),   
+        Color3.fromRGB(0, 160, 255),   
+        Color3.fromRGB(255, 200, 0),    
+        Color3.fromRGB(255, 255, 255)  
     }
 
     local function updateColor(newColor)
@@ -633,7 +631,9 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
     end)
 
     table.insert(Killer.TargetThemeElements, function()
-        CPFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY Stroke.Color = CurrentTheme.BORDER Label.TextColor3 = CurrentTheme.TEXT_WHITE
+        CPFrame.BackgroundColor3 = CurrentTheme.BG_SECONDARY 
+        Stroke.Color = CurrentTheme.BORDER 
+        Label.TextColor3 = CurrentTheme.TEXT_WHITE
     end)
 
     Killer:ApplyHover(CPFrame, function() return CurrentTheme.BG_SECONDARY end, function() return CurrentTheme.BG_MAIN end)
@@ -646,7 +646,7 @@ function TabMethods:CreateColorPicker(flagName, text, defaultColor, callback)
 end
 
 -- ============================================================================
--- 📝 COMPONENTE INPUT PARCHADO (CON ANCHORPOINT ABSOLUTO Y RELLENO INTERNO)
+-- 📝 COMPONENTE INPUT PARCHADO
 -- ============================================================================
 function TabMethods:CreateInput(flagName, text, placeholder, callback)
     if Config[flagName] == nil then Config[flagName] = "" end 
@@ -800,7 +800,7 @@ HomeTab:CreateSection("Panel De Control Principal")
 
 local WelcomeCard = create("Frame", {Size = UDim2.new(1, 0, 0, 70), BackgroundColor3 = CurrentTheme.BG_MAIN}, HomeTab.Frame)
 create("UICorner", {CornerRadius = UDim.new(0, 8)}, WelcomeCard)
-create("UIStroke", {Thickness = 1, Color = CurrentTheme.BORDER}, WelcomeCard)
+local MainCardStroke = create("UIStroke", {Thickness = 1, Color = CurrentTheme.BORDER}, WelcomeCard)
 
 local AvatarImage = create("ImageLabel", {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 10, 0.5, -25), BackgroundColor3 = CurrentTheme.BG_SECONDARY, Image = "rbxassetid://0"}, WelcomeCard)
 create("UICorner", {CornerRadius = UDim.new(1, 0)}, AvatarImage)
@@ -821,12 +821,13 @@ HomeTab:CreateParagraph("Software Detectado:", "Estás ejecutando Killer Hub med
 HomeTab:CreateParagraph("Soporte Técnico Universal:", "Librería gráfica optimizada al 100% con protector perimetral contra pérdida de UI.")
 
 table.insert(Killer.TargetThemeElements, function()
-    WelcomeCard.BackgroundColor3 = CurrentTheme.BG_MAIN WelcomeCard.UIStroke.Color = CurrentTheme.BORDER
+    WelcomeCard.BackgroundColor3 = CurrentTheme.BG_MAIN 
+    MainCardStroke.Color = CurrentTheme.BORDER
     UserWelcomeLabel.TextColor3 = CurrentTheme.TEXT_WHITE
 end)
 
 -- ============================================================================
--- ⚙️ PESTAÑA DE AJUSTES GLOBALES (ESCALAS ESTRICTAS DE 1 EN 1)
+-- ⚙️ PESTAÑA DE AJUSTES GLOBALES
 -- ============================================================================
 local SettingsTab = Killer:CreateTab("Settings", "rbxassetid://10747372517")
 SettingsTab:CreateSection("Personalización")
